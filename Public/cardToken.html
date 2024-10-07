@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stripe Card Payment</title>
+  <style>
+    /* Basic styling for the form */
+    form {
+      width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #card-element {
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #card-errors {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Payment form -->
+  <form id="payment-form">
+    <div id="card-element">
+      <!-- A Stripe Element will be inserted here. -->
+    </div>
+
+    <!-- Button to submit the form -->
+    <button id="submit">Submit Payment</button>
+
+    <!-- Display errors here -->
+    <div id="card-errors" role="alert"></div>
+  </form>
+
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <script>
+    // Initialize Stripe.js with your public key
+    const stripe = Stripe('pk_test_51OjJDWSGTfD0ABcJtVfhsdRM5f6Z6GsTHn2kZas9lan1CFYOQyr7b0XbGGRkI44jIGCbL0lJcDTCrRv6bx6a1vLy00zwQ3JubE'); // Replace with your public key from Stripe
+    const elements = stripe.elements();
+
+    // Create an instance of the card Element
+    const card = elements.create('card');
+    card.mount('#card-element'); // Mount the card element into the form
+
+    // Handle form submission
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      // Create a token using the card details
+      const { token, error } = await stripe.createToken(card);
+
+      console.log("TOKEN ==>>>", token)
+
+      if (error) {
+        // If there's an error, display it in the #card-errors div
+        document.getElementById('card-errors').textContent = error.message;
+      } else {
+        // If token is created successfully, send it to the backend
+        const response = await fetch('/api/subscription/create-card-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(response.data), // Send token ID to backend
+        });
+
+        // Handle the response from the backend
+        const result = await response.json();
+        if (response.ok) {
+          console.log('Customer created successfully:', result.customer);
+          alert('Payment successful! Customer created.');
+        } else {
+          console.error('Error creating customer:', result.error);
+          alert('Error: ' + result.error);
+        }
+      }
+    });
+  </script>
+</body>
+</html>
