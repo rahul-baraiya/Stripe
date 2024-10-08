@@ -68,7 +68,6 @@ const createSubscription = async (req, res, next) => {
   try {
     const user = req.user;
     const { planId, token } = req.body;
-    let userSubscription = null;
 
     const plan = await Plan.findOne({ _id: planId });
     if (!plan) {
@@ -77,29 +76,19 @@ const createSubscription = async (req, res, next) => {
         .json(errorResponse(400, "Subscription plans not found!"));
     }
 
-    const customer = await stripeHelper.createCustomer(user, token.id);
+    const userCustomer = await stripeHelper.createCustomer(user, token.id);
 
-    const userCard = await stripeHelper.saveCardDetails(user, token, customer);
+    const userCard = await stripeHelper.saveCardDetails(
+      user,
+      token,
+      userCustomer
+    );
 
-    if (plan.type === 0) {
-      userSubscription = await stripeHelper.monthlySubscriptionDetails(
-        user,
-        customer,
-        plan
-      );
-    } else if (plan.type === 1) {
-      userSubscription = await stripeHelper.yearlySubscriptionDetails(
-        user,
-        customer,
-        plan
-      );
-    } else if (plan.type === 2) {
-      userSubscription = await stripeHelper.lifeTypeSubscriptionDetails(
-        user,
-        customer,
-        plan
-      );
-    }
+    const userSubscription = await stripeHelper.createSubscription(
+      user,
+      userCustomer,
+      plan
+    );
 
     if (!userSubscription) {
       return res.status(400).json(errorResponse(400, "Something went wrong!"));

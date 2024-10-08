@@ -22,6 +22,7 @@ app.use((error, req, res, next) => {
     success: false,
     statusCode: error.statusCode,
     message: error.message,
+    data: null,
   });
 });
 
