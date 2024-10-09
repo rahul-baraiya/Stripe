@@ -1,4 +1,4 @@
-require("dotenv").config();
+process.loadEnvFile();
 const express = require("express");
 const app = express();
 const connectDB = require("./Configs/connectDB.js");

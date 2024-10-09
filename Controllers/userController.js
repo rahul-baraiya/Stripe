@@ -26,7 +26,7 @@ const registration = async (req, res, next) => {
 
     const userExist = await User.findOne({ email });
     if (userExist) {
-      return res.json(errorResponse(409, " This email is already registered."));
+      return res.status(409).json(errorResponse(409, " This email is already registered."));
     }
 
     const user = await User.create({
@@ -38,7 +38,7 @@ const registration = async (req, res, next) => {
     const token = createToken(user);
     const { password: _, ...responseUser } = user.toObject();
 
-    res.json(
+    res.status(201).json(
       successResponse(
         { user: responseUser, token },
         201,
@@ -64,18 +64,18 @@ const login = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.json(errorResponse(404, "This email not registered."));
+      return res.status(404).json(errorResponse(404, "This email not registered."));
     }
 
     if (user.password != encryptedPassword) {
-      return res.json(errorResponse(401, "Password incorrect."));
+      return res.status(401).json(errorResponse(401, "Password incorrect."));
     }
 
     const token = createToken(user);
     const { password: _, ...responseUser } = user.toObject();
 
-    res.json(
-      successResponse({ user: responseUser, token }, 201, "Login successfully!")
+    res.status(200).json(
+      successResponse({ user: responseUser, token }, 200, "Login successfully!")
     );
   } catch (error) {
     console.log(`There was an issue into userController:login: ${error}`);

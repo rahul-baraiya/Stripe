@@ -12,14 +12,18 @@ const verifyToken = async (req, res, next) => {
       token = token.substring(7);
     }
     if (!token) {
-      return res.json(errorResponse(401, "Please provide a valid token."));
+      return res
+        .status(401)
+        .json(errorResponse(401, "Please provide a valid token."));
     }
 
     const blacklistedToken = await BlacklistToken.findOne({ token });
     if (blacklistedToken) {
-      return res.json(
-        errorResponse(419, "This session has expired, please try again!")
-      );
+      return res
+        .status(419)
+        .json(
+          errorResponse(419, "This session has expired, please try again!")
+        );
     }
 
     const jwtUserObj = await jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
@@ -27,12 +31,14 @@ const verifyToken = async (req, res, next) => {
     const user = await User.findOne({ _id: jwtUserObj.user_id });
 
     if (!user) {
-      return res.json(
-        errorResponse(
-          404,
-          "User Not Found, Please Register to Access this Service"
-        )
-      );
+      return res
+        .status(404)
+        .json(
+          errorResponse(
+            404,
+            "User Not Found, Please Register to Access this Service"
+          )
+        );
     }
 
     req.user = user;
