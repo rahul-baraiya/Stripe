@@ -1,5 +1,4 @@
 const stripe = require("stripe")(process.env.STRIPE_SECRETE_KEY);
-const CONSTANTS = require("../Constants/subscription.js");
 const Card = require("../Models/cardModel.js");
 const Subscription = require("../Models/subscriptionModel.js");
 const Customer = require("../Models/customerModel.js");

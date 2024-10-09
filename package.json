@@ -1,12 +1,12 @@
 {
   "name": "stripe-learning",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "src/app.js",
   "license": "MIT",
   "author": "rahul-baraiya",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "dependencies": {
     "express": "^4.19.2",

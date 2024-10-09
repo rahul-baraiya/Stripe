@@ -1,4 +1,4 @@
-process.loadEnvFile();
+process.loadEnvFile(".env");
 const express = require("express");
 const app = express();
 const connectDB = require("./Configs/connectDB.js");
