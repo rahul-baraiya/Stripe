@@ -2,6 +2,7 @@ const User = require("../Models/userModel.js");
 const jwt = require("jsonwebtoken");
 const BlacklistToken = require("../Models/tokenModel.js");
 const { errorResponse } = require("../Utils/responseMsg.js");
+const { decodeToken } = require("../Utils/jwt.js");
 
 const verifyToken = async (req, res, next) => {
   try {
@@ -26,9 +27,7 @@ const verifyToken = async (req, res, next) => {
         );
     }
 
-    const jwtUserObj = await jwt.verify(token, process.env.ACCESS_TOKEN_KEY);
-
-    const user = await User.findOne({ _id: jwtUserObj.user_id });
+    const user = await User.findOne({ _id: decodeToken(token).user_id });
 
     if (!user) {
       return res

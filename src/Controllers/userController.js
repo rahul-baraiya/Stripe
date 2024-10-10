@@ -1,20 +1,8 @@
-const jwt = require("jsonwebtoken");
 const crypto = require("node:crypto");
 const User = require("../Models/userModel.js");
 const Token = require("../Models/tokenModel.js");
 const { successResponse, errorResponse } = require("../Utils/responseMsg.js");
-
-const createToken = (user) => {
-  return jwt.sign(
-    {
-      user_id: user._id,
-    },
-    process.env.ACCESS_TOKEN_KEY,
-    {
-      expiresIn: process.env.TOKEN_EXPIRE,
-    }
-  );
-};
+const { createToken } = require("../Utils/jwt.js");
 
 const registration = async (req, res, next) => {
   try {
@@ -26,7 +14,9 @@ const registration = async (req, res, next) => {
 
     const userExist = await User.findOne({ email });
     if (userExist) {
-      return res.status(409).json(errorResponse(409, " This email is already registered."));
+      return res
+        .status(409)
+        .json(errorResponse(409, " This email is already registered."));
     }
 
     const user = await User.create({
@@ -38,13 +28,15 @@ const registration = async (req, res, next) => {
     const token = createToken(user);
     const { password: _, ...responseUser } = user.toObject();
 
-    res.status(201).json(
-      successResponse(
-        { user: responseUser, token },
-        201,
-        "Successfully registered."
-      )
-    );
+    res
+      .status(201)
+      .json(
+        successResponse(
+          { user: responseUser, token },
+          201,
+          "Successfully registered."
+        )
+      );
   } catch (error) {
     console.log(
       `There was an issue into userController:registration: ${error}`
@@ -64,7 +56,9 @@ const login = async (req, res, next) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json(errorResponse(404, "This email not registered."));
+      return res
+        .status(404)
+        .json(errorResponse(404, "This email not registered."));
     }
 
     if (user.password != encryptedPassword) {
@@ -74,9 +68,15 @@ const login = async (req, res, next) => {
     const token = createToken(user);
     const { password: _, ...responseUser } = user.toObject();
 
-    res.status(200).json(
-      successResponse({ user: responseUser, token }, 200, "Login successfully!")
-    );
+    res
+      .status(200)
+      .json(
+        successResponse(
+          { user: responseUser, token },
+          200,
+          "Login successfully!"
+        )
+      );
   } catch (error) {
     console.log(`There was an issue into userController:login: ${error}`);
     next(error);
