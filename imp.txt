@@ -1,0 +1,86 @@
+^ FOR JWT RSA KEYs ^
+
+Generate RSA Private Key -> openssl genrsa -out private.key 2048 -> O/P file = private.key
+
+Generate RSA Public Key -> openssl rsa -in private.key -pubout -out public.key -> O/P file = public.key
+
+
+* Create a card token
+{
+  "id": "tok_1N3T00LkdIwHu7ixt44h1F8k",
+  "card": {
+    "id": "card_1N3T00LkdIwHu7ixRdxpVI1Q",
+    "brand": "Visa",
+    "country": "US",
+    "cvc_check": "unchecked",
+    "exp_month": 5,
+    "exp_year": 2026,
+    "fingerprint": "mToisGZ01V71BCos",
+    "funding": "credit",
+    "last4": "4242",
+    "metadata": {},
+  },
+  "client_ip": "52.35.78.6",
+  "type": "card",
+}
+
+This all data return from https://api.stripe.com/v1/tokens and store in to DB or use id to create customer.
+
+* Create a bank account token
+{
+  "id": "tok_1N3T00LkdIwHu7ixt44h1F8k",
+  "object": "token",
+  "bank_account": {
+    "id": "ba_1NWScr2eZvKYlo2C8MgV5Cwn",
+    "account_holder_name": "Jenny Rosen",
+    "account_holder_type": "individual",
+    "bank_name": "STRIPE TEST BANK",
+    "country": "US",
+    "currency": "usd",
+    "fingerprint": "1JWtPxqbdX5Gamtz",
+    "last4": "6789",
+    "routing_number": "110000000",
+    "status": "new"
+  },
+  "client_ip": null,
+  "type": "bank_account",
+}
+
+This all data return from https://api.stripe.com/v1/tokens and store in to DB or use id to create customer.
+
+
+{
+    "id": "tok_1Q64nVSGTfD0ABcJmWmJGm1f",
+    "object": "token",
+    "card": {
+        "id": "card_1Q64nVSGTfD0ABcJHxrn7VX3",
+        "object": "card",
+        "address_city": null,
+        "address_country": null,
+        "address_line1": null,
+        "address_line1_check": null,
+        "address_line2": null,
+        "address_state": null,
+        "address_zip": "64251",
+        "address_zip_check": "unchecked",
+        "brand": "Visa",
+        "country": "US",
+        "cvc_check": "unchecked",
+        "dynamic_last4": null,
+        "exp_month": 4,
+        "exp_year": 2026,
+        "funding": "credit",
+        "last4": "4242",
+        "name": null,
+        "networks": {
+            "preferred": null
+        },
+        "tokenization_method": null,
+        "wallet": null
+    },
+    "client_ip": "27.57.173.214",
+    "created": 1728022529,
+    "livemode": false,
+    "type": "card",
+    "used": false
+}
